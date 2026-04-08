@@ -80,7 +80,7 @@ __require_default_dirs() {
         REQUIRE_DIRS+=("${REQUIRE_DIRS_ADDITIONAL[@]}")
     fi
     REQUIRE_DIRS+=(
-        "${HOME}/.local/require.d"
+        "${HOME}/.local/lib/require.d"
         "/etc/require.d"
         "/usr/lib/require.d"
     )
