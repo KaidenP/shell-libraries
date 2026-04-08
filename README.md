@@ -34,11 +34,16 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Add this to your shell profile (`.bashrc`, `.zshrc`, etc.) to make it permanent.
 
+### Using Libraries
+
+After installation, just put `$(require.d source); require <library>` in your scripts.
+
 ## Libraries
 
 | Library     | Description                                        | README                                             |
 | ----------- | -------------------------------------------------- | -------------------------------------------------- |
 | `require.d` | mechanism for dynamically sourcing shell libraries | [src/require.d/README.md](src/require.d/README.md) |
+| `logging`   | structured logging with levels, colors, and outputs | [src/logging/README.md](src/logging/README.md)     |
 
 ## License
 
