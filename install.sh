@@ -33,7 +33,7 @@ _install_user() {
     _info "Installing (user) to $lib_dir"
 
     mkdir -p "$lib_dir" "$bin_dir"
-    cp -r "$tmp_dir/src"/* "$lib_dir/" || _die "Failed to copy library files"
+    cp -r "$tmp_dir/src"/. "$lib_dir/" || _die "Failed to copy library files"
 
     # Create symlink to the main script in bin_dir
     if [[ -f "$lib_dir/require.d/required.sh" ]]; then
@@ -63,7 +63,7 @@ _install_system() {
     _info "Installing (system) to $lib_dir"
 
     mkdir -p "$lib_dir"
-    cp -r "$tmp_dir/src"/* "$lib_dir/" || _die "Failed to copy library files"
+    cp -r "$tmp_dir/src"/. "$lib_dir/" || _die "Failed to copy library files"
 
     # Create symlink to the main script in bin_dir
     if [[ -f "$lib_dir/require.d/required.sh" ]]; then
