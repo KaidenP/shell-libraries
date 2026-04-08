@@ -51,7 +51,7 @@ __require_is_loaded() {
     # Portable indirect variable reference for bash and zsh.
     local val
     eval "val=\"\${${mark}:-}\""
-    [[ "$val" == "1" ]]
+    [[ "$val" == "1" ]] || [[ "$1" == "required" ]]
 }
 
 # Print an error message to stderr.
