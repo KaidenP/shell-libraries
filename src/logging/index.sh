@@ -2,6 +2,8 @@
 # logging/index.sh - Portable shell logging library
 # Provides structured logging with configurable levels, outputs, and formatting
 
+$(require.d source); require colors
+
 # Log level constants (numeric for comparison)
 readonly LOG_LEVEL_TRACE=0
 readonly LOG_LEVEL_DEBUG=1
@@ -63,12 +65,12 @@ _log_get_color() {
     # Convert to uppercase for portability
     level=$(printf '%s\n' "$level" | tr '[:lower:]' '[:upper:]')
     case "$level" in
-        TRACE) printf '\033[0;37m' ;;   # White
-        DEBUG) printf '\033[0;36m' ;;   # Cyan
-        INFO) printf '\033[0;32m' ;;    # Green
-        WARN) printf '\033[0;33m' ;;    # Yellow
-        ERROR) printf '\033[0;31m' ;;   # Red
-        FATAL) printf '\033[0;35m' ;;   # Magenta
+        TRACE) echo "$C_WHITE" ;;
+        DEBUG) echo "$C_CYAN" ;;
+        INFO) echo "$C_GREEN" ;;
+        WARN) echo "$C_YELLOW" ;;
+        ERROR) echo "$C_RED" ;;
+        FATAL) echo "$C_MAGENTA" ;;
     esac
 }
 
@@ -96,8 +98,10 @@ _log_write() {
     fi
 
     # Build log line with color
-    local reset_color='\033[0m'
-    if ! _log_should_color; then
+    local reset_color
+    if _log_should_color; then
+        reset_color="$C_RESET"
+    else
         reset_color=""
     fi
 

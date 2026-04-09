@@ -1,5 +1,5 @@
 # Check if terminal supports Cape sequences
-if [ -t 1 ] && command -v tput &>/dev/null; then
+if command -v tput &>/dev/null; then
   # Colors
   if [ "$(tput colors)" -ge 8 ]; then
     C_RED="$(tput setaf 1)"
