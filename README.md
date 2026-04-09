@@ -45,6 +45,7 @@ After installation, just put `$(require.d source); require <library>` in your sc
 | `require.d`  | mechanism for dynamically sourcing shell libraries | [src/require.d/README.md](src/require.d/README.md) |
 | `logging`    | structured logging with levels, colors, and outputs | [src/logging/README.md](src/logging/README.md)     |
 | `subcommand` | dispatching and help for subcommand-based CLI apps | [src/subcommand/README.md](src/subcommand/README.md) |
+| `utils`      | general-purpose utilities: command detection, sudo, WSL checks | [src/utils/README.md](src/utils/README.md) |
 
 ## License
 
