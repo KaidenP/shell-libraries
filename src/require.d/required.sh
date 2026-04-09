@@ -5,11 +5,12 @@
 # Dual-mode script: executable CLI or sourceable runtime library.
 #
 # CLI usage:
-#   require.d source              # emit source command for inline use
+#   require.d source [LIB]        # emit source/require commands for inline use
 #   require.d install [--user | --system]
 #
 # Runtime usage (after sourcing):
 #   $(require.d source)           # load require() into current shell
+#   $(require.d source <lib>)     # load require() and source a library
 #   require <library> [URI]       # source a library, optionally auto-install
 # =============================================================================
 
@@ -376,6 +377,9 @@ require() {
 
 unset -f __require_d_is_sourced   # only needed at load time
 
+# Mark that required.sh has been sourced (for cmd_source to detect).
+export __REQUIRE_D_SOURCED=1
+
 # =============================================================================
 # CLI MODE  (script is executed directly)
 # =============================================================================
@@ -423,10 +427,19 @@ _find_runtime() {
 # ── Subcommands ───────────────────────────────────────────────────────────────
 
 cmd_source() {
-    local runtime
+    local runtime lib_name="${1:-}"
     runtime="$(_find_runtime)" \
         || _die "runtime not found; run 'require.d install' first"
-    printf 'source %s\n' "$runtime"
+
+    # If sourced flag is not set, output source command first.
+    if [[ -z "${__REQUIRE_D_SOURCED:-}" ]]; then
+        printf 'source %s\n' "$runtime"
+    fi
+
+    # If a library name was provided, output require command.
+    if [[ -n "$lib_name" ]]; then
+        printf 'require %s\n' "$lib_name"
+    fi
 }
 
 cmd_install() {
@@ -499,10 +512,14 @@ cmd_help() {
 require.d — portable shell library dependency manager
 
 USAGE
-  require.d source
-      Print a shell source command that loads the require() runtime into the
-      current shell.  Intended for use as:
-          $(require.d source)
+  require.d source [LIBRARY]
+      Print shell source command(s) to load the require() runtime and/or a
+      library. On first use, outputs both the source command and the require
+      command; on subsequent uses, outputs only the require command.
+
+      Intended for use as:
+          $(require.d source)              # load require() into shell
+          $(require.d source logging)      # load both require() and logging
 
   require.d install [--user | --system]
       Install require.d onto this system.
@@ -529,10 +546,13 @@ URI FORMATS
   is treated as a tarball (or install script if the URL ends in .sh).
 
 EXAMPLES
-  # Load at the top of any script
+  # Load require() into shell (first call outputs source, later calls don't)
   $(require.d source)
 
-  # Source a local library
+  # Load require() and source logging library in one call
+  $(require.d source logging)
+
+  # Source a local library (after require() is loaded)
   require logging
 
   # Source a library, installing from git if missing

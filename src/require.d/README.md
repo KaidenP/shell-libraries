@@ -16,9 +16,8 @@ chmod +x require.d
 ./require.d install           # --user by default; use --system as root
 
 # 2. Use in any script
-$(require.d source)           # loads require() into the current shell
+$(require.d source logging)   # load require() and source logging library
 
-require logging               # source a local library
 require colors 'git://git@github.com:user/shell-colors'   # auto-install if missing
 ```
 
@@ -69,13 +68,19 @@ Both install commands are **idempotent** — safe to re-run.
 ## CLI reference
 
 ```
-require.d source
+require.d source [LIBRARY]
 ```
-Emits a `source <path>` command that loads the `require()` runtime.  Use it
-at the top of any script:
+Emits shell command(s) to load the `require()` runtime and/or a library.  On
+first use, outputs both the source command and the require command; on
+subsequent uses, outputs only the require command.  Use it at the top of any
+script:
 
 ```sh
+# Load require() into the shell
 $(require.d source)
+
+# Load require() and source a library in one call
+$(require.d source logging)
 ```
 
 ```
