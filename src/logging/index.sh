@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # logging/index.sh - Portable shell logging library
 # Provides structured logging with configurable levels, outputs, and formatting
 
@@ -19,8 +20,8 @@ LOG_TIMESTAMP_FORMAT="${LOG_TIMESTAMP_FORMAT:-%Y-%m-%d %H:%M:%S}"
 LOG_PREFIX="${LOG_PREFIX:-}"
 
 # Initialize output destinations if not already set
-if [[ -z "${LOG_OUTPUTS[0]:-}" ]]; then
-    LOG_OUTPUTS=("/dev/stdout")
+if [[ ! -v LOG_OUTPUTS || -z "${LOG_OUTPUTS[0]:-}" ]]; then
+    declare -ag LOG_OUTPUTS=("/dev/stdout")
 fi
 
 # Internal: Map level name to number

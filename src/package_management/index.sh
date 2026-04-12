@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # Load required libraries
 eval "$(require.d source logging)"
 eval "$(require.d source utils)"
@@ -131,7 +132,7 @@ queue_install_deps() {
 UPDATED=0
 install_deps() {
   # Update package lists and install
-  if ((${#batch_packages[@]} > 0)); then
+  if [[ -v batch_packages && ${#batch_packages[@]} -gt 0 ]]; then
     if [[ "$PKG_MGR" == "unknown" ]]; then
       log "ERROR: Cannot install packages, no supported package manager."
       exit 1

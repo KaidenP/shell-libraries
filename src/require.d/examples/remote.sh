@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # =============================================================================
 # examples/remote.sh — installing libraries from remote sources
 # =============================================================================

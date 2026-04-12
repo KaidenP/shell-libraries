@@ -77,7 +77,7 @@ __require_download() {
 __require_default_dirs() {
     REQUIRE_DIRS=()
     # Prepend any user-supplied additional dirs.
-    if [[ ${#REQUIRE_DIRS_ADDITIONAL[@]} -gt 0 ]]; then
+    if [[ -v REQUIRE_DIRS_ADDITIONAL && ${#REQUIRE_DIRS_ADDITIONAL[@]} -gt 0 ]]; then
         REQUIRE_DIRS+=("${REQUIRE_DIRS_ADDITIONAL[@]}")
     fi
     REQUIRE_DIRS+=(
@@ -95,12 +95,12 @@ __require_find_lib() {
 
     local dirs_ref
     # Use REQUIRE_DIRS if already set and non-empty.
-    if [[ ${#REQUIRE_DIRS[@]} -eq 0 ]]; then
+    if [[ -z "${REQUIRE_DIRS[0]:-}" ]]; then
         __require_default_dirs
     fi
 
     local dir
-    for dir in "${REQUIRE_DIRS[@]}"; do
+    for dir in "${REQUIRE_DIRS[@]:-}"; do
         if [[ -f "${dir}/${lib_name}.sh" ]]; then
             __require_found_path="${dir}/${lib_name}.sh"
             return 0
@@ -333,7 +333,7 @@ require() {
     fi
 
     # Ensure REQUIRE_DIRS is populated.
-    if [[ ${#REQUIRE_DIRS[@]} -eq 0 ]]; then
+    if [[ -z "${REQUIRE_DIRS[0]:-}" ]]; then
         __require_default_dirs
     fi
 
@@ -369,7 +369,7 @@ require() {
     fi
 
     __require_err "library '$lib_name' not found"
-    __require_err "search dirs: ${REQUIRE_DIRS[*]}"
+    __require_err "search dirs: ${REQUIRE_DIRS[*]:-}"
     return 1
 }
 

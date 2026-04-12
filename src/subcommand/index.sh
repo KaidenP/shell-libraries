@@ -73,7 +73,7 @@ _sc_help() {
 		printf '       %s -h\n' "$display"
 	fi
 
-	local subcmds
+	local -a subcmds=()
 	# Combine subcommands from search directory and predefined help functions
 	mapfile -t subcmds < <(
 		{
@@ -81,7 +81,7 @@ _sc_help() {
 			_sc_list_predefined "$prefix"
 		} | sort -u
 	)
-	[[ ${#subcmds[@]} -eq 0 ]] && return
+	[[ ! -v subcmds || ${#subcmds[@]} -eq 0 ]] && return
 
 	printf '\nSubcommands:\n'
 

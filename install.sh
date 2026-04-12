@@ -5,7 +5,7 @@
 #   --system Install to /usr (default if root)
 #   --force  Force reinstall if already installed
 
-set -e
+set -euo pipefail
 
 readonly REPO_URL="https://github.com/KaidenP/shell-libraries.git"
 readonly REPO_BRANCH="master"

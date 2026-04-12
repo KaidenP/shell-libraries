@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # =============================================================================
 # examples/library-template/index.sh — how to write a require.d-compatible lib
 # =============================================================================

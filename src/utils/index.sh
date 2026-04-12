@@ -51,7 +51,7 @@ sudo_if_possible() {
     # User switching: prefer runuser (no sudo needed when root), fall back to sudo
     if [[ "$uid" -eq 0 ]] && has_command runuser; then
       prefix=(runuser -u "$as_user" --)
-    elif has_command sudo && ([[ "$uid" -eq 0 ]] || ! LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"); then
+    elif has_command sudo && ([[ "$uid" -eq 0 ]] || ! (LANG= sudo -n -v 2>&1 | grep -q "may not run sudo")); then
       prefix=(sudo -u "$as_user")
     else
       [[ "$force" == true ]] && {
@@ -62,7 +62,7 @@ sudo_if_possible() {
     fi
   elif [[ "$uid" -eq 0 ]]; then
     : # already root, run directly
-  elif has_command sudo && ! LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"; then
+  elif has_command sudo && ! (LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"); then
     prefix=(sudo)
   elif [[ "$run_anyways" == true ]]; then
     : # run as current user
