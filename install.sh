@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Installation script for require.d shell library collection
-# Usage: bash install.sh [--user|--system]
+# Usage: bash install.sh [--user|--system] [--force]
 #   --user   Install to ~/.local (default if not root)
 #   --system Install to /usr (default if root)
+#   --force  Force reinstall if already installed
 
 set -e
 
@@ -18,10 +19,36 @@ _info() {
     printf '%s\n' "$@"
 }
 
+_is_installed_user() {
+    [[ -d "${HOME}/.local/lib/require.d" ]] && [[ -f "${HOME}/.local/bin/require.d" ]]
+}
+
+_is_installed_system() {
+    [[ -d "/usr/lib/require.d" ]] && [[ -f "/usr/bin/require.d" ]]
+}
+
+_uninstall_user() {
+    _info "Uninstalling existing user installation..."
+    rm -f "${HOME}/.local/bin/require.d"
+    rm -rf "${HOME}/.local/lib/require.d"
+    _info "Uninstall complete."
+}
+
+_uninstall_system() {
+    _info "Uninstalling existing system installation..."
+    rm -f "/usr/bin/require.d"
+    rm -rf "/usr/lib/require.d"
+    _info "Uninstall complete."
+}
+
 _install_user() {
     local lib_dir="${HOME}/.local/lib/require.d"
     local bin_dir="${HOME}/.local/bin"
     local tmp_dir
+
+    if _is_installed_user; then
+        _die "require.d is already installed to $lib_dir. Use --force to reinstall."
+    fi
 
     tmp_dir=$(mktemp -d) || _die "Failed to create temporary directory"
     trap "rm -rf '$tmp_dir'" EXIT
@@ -53,6 +80,10 @@ _install_system() {
     local bin_dir="/usr/bin"
     local tmp_dir
 
+    if _is_installed_system; then
+        _die "require.d is already installed to $lib_dir. Use --force to reinstall."
+    fi
+
     tmp_dir=$(mktemp -d) || _die "Failed to create temporary directory"
     trap "rm -rf '$tmp_dir'" EXIT
 
@@ -77,17 +108,20 @@ _install_system() {
 
 main() {
     local mode="auto"
+    local force=0
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --user)   mode="user"   ;;
             --system) mode="system" ;;
+            -f|--force) force=1     ;;
             -h|--help)
-                _info "Usage: $0 [--user|--system]"
+                _info "Usage: $0 [--user|--system] [--force]"
                 _info ""
                 _info "Options:"
                 _info "  --user    Install to ~/.local (default if not root)"
                 _info "  --system  Install to /usr (default if root)"
+                _info "  --force   Uninstall and reinstall if already installed"
                 exit 0
                 ;;
             *)
@@ -104,6 +138,22 @@ main() {
         else
             mode="user"
         fi
+    fi
+
+    # Handle --force flag
+    if [[ $force -eq 1 ]]; then
+        case "$mode" in
+            user)
+                if _is_installed_user; then
+                    _uninstall_user
+                fi
+                ;;
+            system)
+                if _is_installed_system; then
+                    _uninstall_system
+                fi
+                ;;
+        esac
     fi
 
     case "$mode" in

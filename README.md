@@ -24,6 +24,17 @@ bash <(curl -fsSL https://raw.githubusercontent.com/KaidenP/shell-libraries/refs
 sudo bash <(curl -fsSL https://raw.githubusercontent.com/KaidenP/shell-libraries/refs/heads/master/install.sh) --system
 ```
 
+### Installation Flags
+
+- `--user` — Install to `~/.local` (default if not running as root)
+- `--system` — Install to `/usr` (default if running as root, requires sudo)
+- `--force` — Force reinstall if already installed (uninstalls then reinstalls)
+
+Example with --force:
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/KaidenP/shell-libraries/refs/heads/master/install.sh) --force
+```
+
 ### Post-Installation
 
 If you used user install, make sure `~/.local/bin` is in your PATH:
