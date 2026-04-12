@@ -378,7 +378,7 @@ require() {
 unset -f __require_d_is_sourced   # only needed at load time
 
 # Mark that required.sh has been sourced (for cmd_source to detect).
-export __REQUIRE_D_SOURCED=1
+__REQUIRE_D_SOURCED=1
 
 # =============================================================================
 # CLI MODE  (script is executed directly)

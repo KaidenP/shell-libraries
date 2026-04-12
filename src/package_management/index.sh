@@ -41,7 +41,7 @@ detect_platform() {
     UPGRADE_CMD="zypper update -y"
     INSTALL_CMD="zypper install -y"
   else
-    log "WARN: No supported package manager found."
+    log_warn "No supported package manager found."
     PKG_MGR="unknown"
     UPDATE_CMD="false"
     INSTALL_CMD="false"
@@ -90,7 +90,7 @@ queue_install_deps() {
 
     # Skip if command exists
     if has_command "$cmd"; then
-      log "Skipping $cmd, already installed."
+      log_info "Skipping $cmd, already installed."
       continue
     fi
 
@@ -101,7 +101,7 @@ queue_install_deps() {
 
     for entry in "${pkg_entries[@]}"; do
       if [[ "$entry" == "optional" ]]; then
-        log "Skipping command '$cmd', as it was marked optional"
+        log_info "Skipping command '$cmd', as it was marked optional"
         script_to_run="true"
         break
       fi
@@ -120,11 +120,11 @@ queue_install_deps() {
     if [[ -n "$pkg_to_install" ]]; then
       batch_packages+=("$pkg_to_install")
     elif [[ -n "$script_to_run" ]]; then
-      log "Running script for $cmd${required_by:+ as required by $required_by}: $script_to_run"
+      log_info "Running script for $cmd${required_by:+ as required by $required_by}: $script_to_run"
       $script_to_run
     else
-      log "ERROR: Don't know how to install $cmd for $PLATFORM-$VERSION${required_by:+ as required by $required_by}."
-      log "ERROR: Known platforms: $(printf '%s ' "${pkg_entries[@]}")"
+      log_error "Don't know how to install $cmd for $PLATFORM-$VERSION${required_by:+ as required by $required_by}."
+      log_error "Known platforms: $(printf '%s ' "${pkg_entries[@]}")"
     fi
   done
 }
@@ -134,18 +134,18 @@ install_deps() {
   # Update package lists and install
   if [[ -v batch_packages && ${#batch_packages[@]} -gt 0 ]]; then
     if [[ "$PKG_MGR" == "unknown" ]]; then
-      log "ERROR: Cannot install packages, no supported package manager."
+      log_error "Cannot install packages, no supported package manager."
       exit 1
     fi
 
     if [[ $UPDATED -eq 0 ]]; then
-      log "Updating package lists using $PKG_MGR..."
+      log_info "Updating package lists using $PKG_MGR..."
       # shellcheck disable=SC2086
       sudo_if_possible -f $UPDATE_CMD
       UPDATED=1
     fi
 
-    log "Installing packages: ${batch_packages[*]}"
+    log_info "Installing packages: ${batch_packages[*]}"
     # shellcheck disable=SC2086
     sudo_if_possible -f $INSTALL_CMD "${batch_packages[@]}"
   fi
